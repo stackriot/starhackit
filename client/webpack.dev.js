@@ -1,6 +1,9 @@
 var path = require( 'path' );
 var webpack = require( 'webpack' );
 var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+var CarteBlanche = require('carte-blanche');
+var ReactPlugin = require('carte-blanche-react-plugin');
+var SourcePlugin = require('carte-blanche-source-plugin').default;
 var pkg = require('./package.json');
 
 var webpackDevConfig = {
@@ -23,6 +26,14 @@ var webpackDevConfig = {
                 NODE_ENV: JSON.stringify( 'development' )
             }
         } ),
+        new CarteBlanche({
+          componentRoot: './src/app',
+          dest: 'components',
+          plugins: [
+           new SourcePlugin({ }),
+           new ReactPlugin()
+          ]
+        }),
         new OpenBrowserPlugin({ url: 'http://localhost:8080' })
     ],
 
