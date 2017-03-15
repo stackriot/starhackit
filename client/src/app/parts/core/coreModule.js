@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
-import { browserHistory, Router } from 'react-router';
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
+import createHistory from 'history/createBrowserHistory'
+import { routerReducer, routerMiddleware } from 'react-router-redux';
 import {createAction, createReducer} from 'redux-act';
 import {ASYNC_META} from 'redux-act-async';
 import Alert from 'react-s-alert';
@@ -26,7 +26,8 @@ function LanguageReducer(actions){
 
 function Reducers(actions){
   return {
-    language: LanguageReducer(actions)
+    language: LanguageReducer(actions),
+    router: routerReducer
   }
 }
 
@@ -70,21 +71,11 @@ function createHttpError(payload = {}){
     return errorOut;
 }
 
-function createRouter(store, routes){
-    const history = syncHistoryWithStore(browserHistory, store)
-
-    history.listen(location => {
-       debug('routing to ', location)
-    })
-
-    return <Router history={history} routes={routes}/>
-}
-
 // Part
 export default function({context}) {
   let actions = Actions();
   const middlewares = [
-    routerMiddleware(browserHistory),
+    routerMiddleware(createHistory()),
     MiddlewareAlert()
   ];
   const Notification = notification(context);
@@ -120,7 +111,6 @@ export default function({context}) {
     actions,
     reducers: Reducers(actions),
     containers: Containers(context, actions),
-    createRouter,
     middlewares
   }
 }

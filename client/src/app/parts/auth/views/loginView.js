@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 
@@ -27,7 +27,7 @@ export default(context) => {
               <div className="strike">
                 <span className="or"></span>
               </div>
-              <FlatButton label={tr.t('Forgot Password')} containerElement={<Link to = "/forgot" />}/>
+              <FlatButton label={tr.t('Forgot Password')} containerElement={<Link to="/forgot" />}/>
             </div>
           </Paper>
         </div>

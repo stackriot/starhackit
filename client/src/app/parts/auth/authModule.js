@@ -1,8 +1,9 @@
 import _ from 'lodash';
+import React from 'react';
 import {createActionAsync, createReducerAsync} from 'redux-act-async';
 import {createAction, createReducer} from 'redux-act';
 import {connect} from 'react-redux';
-import {browserHistory} from 'react-router';
+import { push } from 'react-router-redux'
 import {parse} from 'query-string'
 import mobx from 'mobx';
 import Checkit from 'checkit';
@@ -145,32 +146,29 @@ function Containers(context, actions, stores) {
   }
 }
 
-function redirect() {
-  const nextPath = parse(window.location.search).nextPath || '/app/profile';
-  browserHistory.push(nextPath);
-}
+
 
 function Routes(containers, stores) {
   return {
-    childRoutes: [
+    routes: [
       {
-        path: 'login',
+        path: '/login',
         component: containers.login()
       }, {
-        path: 'register',
+        path: '/register',
         component: containers.register()
       }, {
-        path: 'logout',
+        path: '/logout',
         component: containers.logout(),
         onEnter: () => stores.logout.execute()
       }, {
-        path: 'forgot',
+        path: '/forgot',
         component: containers.forgot()
       }, {
-        path: 'resetPassword/:token',
+        path: '/resetPassword/:token',
         component: containers.resetPassword()
       }, {
-        path: 'verifyEmail/:code',
+        path: '/verifyEmail/:code',
         component: containers.registrationComplete(),
         onEnter: nextState => {
           stores.verifyEmailCode.execute({ code: nextState.params.code })
@@ -184,6 +182,15 @@ export default function ({context, rest}) {
   const resources = Resources(rest);
   let actions = Actions(resources);
   let stores;
+
+
+  function redirect() {
+    console.log("redirect");
+    const {dispatch} = context.store;
+    const nextPath = parse(window.location.search).nextPath || '/app/profile';
+    console.log("dipatch ", nextPath);
+    dispatch(push(nextPath));
+  }
 
   function Stores(dispatch) {
     return {
@@ -213,7 +220,7 @@ export default function ({context, rest}) {
           }
 
           try {
-            //console.log(_.pick(rules, 'username', 'password'))
+            console.log("login ");
             const rule = new Checkit(_.pick(rules, 'username', 'password'));
             await rule.run(payload);
             const {response} = await dispatch(actions.login(payload));
@@ -262,7 +269,8 @@ export default function ({context, rest}) {
         execute: mobx.action(async function (param) {
           try {
             await dispatch(actions.verifyEmailCode(param));
-            browserHistory.push(`/login`);
+            //TODO
+            //browserHistory.push(`/login`);
           } catch (errors) {
             //
           }

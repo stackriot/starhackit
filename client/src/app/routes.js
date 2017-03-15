@@ -1,3 +1,7 @@
+// wrap <Route> and use this everywhere instead, then when
+// sub routes are added to any route it'll work
+//import React from 'react';
+
 export default function Routes(store, parts) {
 
   function isAuthenticated(param, replaceState) {
@@ -7,38 +11,35 @@ export default function Routes(store, parts) {
     }
   }
 
-  return {
-    childRoutes: [
+
+  return [
       {
         path: '/',
         component: parts.auth.containers().app(),
-        indexRoute: {
-          getComponent: (nextState, cb) => {
-            return require.ensure([], (require) => {
-              cb(null, require('parts/core/views/mainLanding').default)
-            })
-          }
-        },
-        childRoutes: [
-          parts.auth.routes(store),
+        routes: [
+          {
+            path:"/ll",
+            component: parts.auth.containers().login()
+          },
+          ...parts.auth.routes(store).routes,
+          ...parts.profile.routes(store),
           {
             path: 'app',
             onEnter: isAuthenticated,
-            childRoutes: [parts.profile.routes(store)]
-          },
+            routes: parts.profile.routes(store)
+          }/*,
           {
             path: 'admin',
             onEnter: isAuthenticated,
-            childRoutes: parts.admin.routes(store, parts).childRoutes
+            routes: parts.admin.routes(store, parts).routes
           },
           {
             path: 'db',
             onEnter: isAuthenticated,
-            childRoutes: parts.db.routes(store, parts).childRoutes
+            routes: parts.db.routes(store, parts).routes
           }
-
+*/
         ]
       },
     ]
-  }
 }

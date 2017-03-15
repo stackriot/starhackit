@@ -49,11 +49,11 @@ function Containers(context, actions, stores) {
 }
 
 function Routes(containers, store, actions) {
-  return {
-    path: 'profile',
+  return [{
+    path: '/app/profile',
     component: containers.profile(),
     onEnter: () => store.dispatch(actions.get())
-  }
+  }]
 }
 
 export default function ({context, rest}) {

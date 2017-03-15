@@ -39,7 +39,7 @@ function Containers(context, actions){
 
 function Routes(containers, store, actions){
     return {
-      childRoutes : [
+      routes : [
           {
               path: 'schema',
               component: containers.schema(),

@@ -1,6 +1,8 @@
 import 'assets/stylus/main';
 import tr from 'i18next';
 import Rest from './utils/rest';
+import createHistory from 'history/createBrowserHistory'
+
 import configureStore from './configureStore';
 
 import AuthModule from './parts/auth/authModule';
@@ -30,7 +32,8 @@ export default function() {
     const rest = Rest();
     const context = {
       tr,
-      formatter: formatter()
+      formatter: formatter(),
+      history: createHistory()
     }
 
     const partOptions = {
@@ -48,6 +51,8 @@ export default function() {
     }
 
     const store = configureStore(parts);
+    context.store = store;
+
     const jwt = Jwt(store);
 
     rest.setJwtSelector(jwt.selector(store));

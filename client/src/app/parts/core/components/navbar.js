@@ -1,9 +1,10 @@
 import React, {PropTypes} from 'react';
+import { Link } from 'react-router-dom'
 import AppBar from 'material-ui/AppBar';
 import LeftNav from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import config from 'config';
-import {browserHistory} from 'react-router';
+import { push } from 'react-router-redux'
 import mobx from 'mobx';
 import {observer} from 'mobx-react';
 
@@ -37,24 +38,27 @@ function navLinks(authenticated) {
   }
 }
 
-export default () => {
-
+export default (context) => {
+  const {dispatch} = context.store;
   const store = mobx.observable({
     open: false,
     toggle: mobx.action(function() {
       this.open = !this.open;
     }),
     navChange: mobx.action(function(menuItem) {
-      browserHistory.push(menuItem.route)
+      console.log("navChange ", menuItem)
+      dispatch(push(menuItem.route));
       this.open = false;
     })
   })
 
   function Menu(props){
+    console.log("navbar ", props);
       return (
         <div>
           {navLinks(props.authenticated).map((menu, key) => (
               <MenuItem key={key} onTouchTap={() => props.navChange(menu)}>
+                {/*<Link to={menu.route}>{menu.text}</Link>*/}
                 {menu.text}
               </MenuItem>
           ))}

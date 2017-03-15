@@ -49,7 +49,7 @@ export default function configureStore(modules, initialState = {}) {
   const store = createStore(
     reducers,
     initialState,
-    compose(applyMiddleware(thunk, ...middlewares, logger()), devTools())
+    compose(applyMiddleware(thunk, logger(), ...middlewares), devTools())
   );
 
   setDispatch(modules, store.dispatch);
